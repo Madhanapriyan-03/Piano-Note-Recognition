@@ -193,7 +193,7 @@ def main():
                     audio_path_to_process = tmp.name
                     temp_audio_file = tmp.name
         else:
-            samples_dir = Path("data/maestro")
+            samples_dir = PROJECT_ROOT / "data" / "maestro"
             sample_wavs = list(samples_dir.rglob("*.wav")) if samples_dir.exists() else []
 
             if sample_wavs:

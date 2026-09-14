@@ -1,17 +1,46 @@
-﻿.venv/
-__pycache__/
-*.pyc
-.pytest_cache/
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
 
-data/maestro/
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Model Checkpoints & Weights
+*.pth
+*.pt
+*.ckpt
+*.bin
 models/*.pt
 models/*.pth
+piano_transcription_inference_data/
+*.download.tmp
+*.tmp
 
-outputs/
-*.mid
+# Datasets & Audio Assets
+data/maestro/
+data/samples/
 *.wav
 *.mp3
 *.flac
 *.ogg
+*.m4a
+*.aac
 
+# Output & Generated Artifacts
+outputs/
+*.mid
+*.midi
+
+# Streamlit Secrets (Keep config.toml tracked)
 .streamlit/secrets.toml
+
+# System Files
+.DS_Store
+Thumbs.db
