@@ -1,0 +1,72 @@
+# ==============================================================================
+# Piano Note Recognition and Automatic Piano Transcription Configuration
+# ==============================================================================
+
+# Audio Preprocessing Parameters
+audio:
+  sample_rate: 16000          # Standard audio sampling rate (Hz)
+  n_fft: 2048                 # FFT window size
+  hop_length: 512             # Hop size between successive frames (16000/512 = 31.25 frames/sec)
+  win_length: 2048            # STFT window length
+  window: "hann"              # Window function
+  n_mels: 229                 # Number of Mel frequency bins
+  f_min: 30.0                 # Minimum frequency (Hz) - roughly near A0 (27.5 Hz)
+  f_max: 8000.0               # Maximum frequency (Hz) - Nyquist for 16kHz
+  normalize_audio: true       # Peak amplitude normalization
+  log_eps: 1e-6               # Epsilon for log-magnitude computation
+
+# Model Architecture Parameters (CRNN)
+model:
+  name: "CRNNTranscriber"
+  in_channels: 1              # Single-channel 2D Mel-spectrogram
+  cnn_channels: [32, 64, 128] # Conv2D filter channels
+  cnn_kernel_size: [3, 3]     # 2D convolution kernel
+  pool_sizes: [[1, 2], [1, 2], [1, 2]] # Pool along frequency axis only, preserving time resolution
+  lstm_hidden: 128            # Bidirectional LSTM hidden units
+  lstm_layers: 2              # Number of stacked BiLSTM layers
+  dropout: 0.25               # Dropout probability
+  min_midi: 21                # Standard 88-key piano starting note (A0)
+  max_midi: 108               # Standard 88-key piano ending note (C8)
+  num_pitches: 88             # Total piano pitch classes (108 - 21 + 1)
+
+# Dataset Configuration
+dataset:
+  dataset_root: "data/maestro" # Root directory containing MAESTRO dataset
+  metadata_file: "maestro-v3.0.0.json" # MAESTRO metadata JSON filename
+  segment_duration: 3.0       # Training segment length in seconds
+  hop_duration: 1.5           # Training segment step / stride in seconds
+  val_split: 0.15             # Validation set fraction
+  test_split: 0.15            # Test set fraction
+  num_workers: 0              # DataLoader worker processes (0 for universal compatibility)
+  cache_spectrograms: false   # Optional in-memory caching for faster training
+
+# Training Configuration
+training:
+  epochs: 20
+  batch_size: 16
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  lr_scheduler: "cosine"      # Options: cosine, plateau, step
+  min_lr: 0.00001
+  onset_loss_weight: 1.0      # Multiplier for note onset loss
+  frame_loss_weight: 1.0      # Multiplier for frame activation loss
+  clip_grad_norm: 3.0         # Gradient clipping max norm
+  early_stopping_patience: 7  # Early stopping epochs without improvement
+  seed: 42                    # Random seed for reproducibility
+  device: "auto"              # Options: auto, cuda, cpu, mps
+
+# Inference & Post-Processing Configuration
+inference:
+  onset_threshold: 0.5        # Sigmoid threshold for detecting a note onset
+  frame_threshold: 0.4        # Sigmoid threshold for active sounding note frame
+  min_note_duration: 0.05     # Minimum note duration in seconds (filters transient noise)
+  onset_tolerance: 0.05       # Note onset matching tolerance window in seconds for evaluation (+-50ms)
+
+# Storage & Output Paths
+paths:
+  model_dir: "models"
+  best_model_name: "best_model.pt"
+  latest_checkpoint_name: "checkpoint_latest.pt"
+  output_dir: "outputs"
+  logs_dir: "outputs/logs"
+  samples_dir: "data/samples"

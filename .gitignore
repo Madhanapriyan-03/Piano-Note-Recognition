@@ -1,0 +1,17 @@
+﻿.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+data/maestro/
+models/*.pt
+models/*.pth
+
+outputs/
+*.mid
+*.wav
+*.mp3
+*.flac
+*.ogg
+
+.streamlit/secrets.toml
