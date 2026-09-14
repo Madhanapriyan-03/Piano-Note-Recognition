@@ -1,0 +1,12 @@
+streamlit
+torch
+numpy
+librosa
+soundfile
+piano-transcription-inference==0.0.6
+audioread
+mido
+pretty_midi
+pyyaml
+matplotlib
+pandas
